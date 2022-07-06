@@ -13,6 +13,10 @@ steps:
     script: echo "Pipeline triggered succesfully"
     workingDirectory: 
     
+- task: oc-setup@2
+  inputs:
+    connectionType: 'OpenShift Connection Service'
+    openshiftService: 'openshift service account'
   # Install oc so that it can be used within a 'script' or bash 'task'
 - task: PowerShell@2
   displayName: download oc executable file
@@ -25,14 +29,14 @@ steps:
   displayName: download oc executable file
   inputs:
     targetType: inline
-    script: Expand-Archive -LiteralPath '.\oc.zip' -DestinationPath .\
+    script: Expand-Archive -Force -LiteralPath '.\oc.zip' -DestinationPath .\
     workingDirectory:
 
 - task: oc-setup@2
   inputs:
     openshiftService: 'openshift service account'
     version: '4.8.11'
-    path: .\
+    workingDirectory: .\
 # A script task making use of 'oc'
 - script: |
     oc new-project test-project
