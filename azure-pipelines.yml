@@ -12,3 +12,13 @@ steps:
     targetType: inline
     script: echo "Pipeline triggered succesfully"
     workingDirectory: 
+    
+  # Install oc so that it can be used within a 'script' or bash 'task'
+- task: oc-setup@2
+  inputs:
+    openshiftService: 'My Openshift'
+    version: '4.10.10'
+# A script task making use of 'oc'
+- script: |
+    oc new-project test-project
+    
