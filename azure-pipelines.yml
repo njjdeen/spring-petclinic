@@ -3,3 +3,12 @@ trigger:
 
 pool:
   name: 'windows-agent'
+
+steps:
+
+- task: Bash@3
+  displayName: print message
+  inputs:
+    targetType: inline
+    script: echo "Pipeline triggered succesfully"
+    workingDirectory: ~
