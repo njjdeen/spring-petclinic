@@ -16,7 +16,7 @@ steps:
   # Install oc so that it can be used within a 'script' or bash 'task'
 - task: oc-setup@2
   inputs:
-    openshiftService: 'My Openshift'
+    openshiftService: 'openshift service account'
     version: '4.10.10'
 # A script task making use of 'oc'
 - script: |
