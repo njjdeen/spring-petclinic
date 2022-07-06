@@ -14,10 +14,17 @@ steps:
     workingDirectory: 
     
   # Install oc so that it can be used within a 'script' or bash 'task'
+- task: PowerShell@2
+  displayName: download oc executable file
+  inputs:
+    targetType: inline
+    script: Invoke-WebRequest -Uri https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/windows/oc.zip -OutFile ".\oc-client"
+    workingDirectory:
+
 - task: oc-setup@2
   inputs:
     openshiftService: 'openshift service account'
-    version: '4.10.10'
+    version: '4.8.11'
 # A script task making use of 'oc'
 - script: |
     oc new-project test-project
