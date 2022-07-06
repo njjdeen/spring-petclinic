@@ -11,4 +11,4 @@ steps:
   inputs:
     targetType: inline
     script: echo "Pipeline triggered succesfully"
-    workingDirectory: ~
+    workingDirectory: 
