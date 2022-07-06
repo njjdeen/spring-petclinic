@@ -18,26 +18,32 @@ steps:
     connectionType: 'OpenShift Connection Service'
     openshiftService: 'openshift service account'
   # Install oc so that it can be used within a 'script' or bash 'task'
-- task: PowerShell@2
-  displayName: download oc executable file
-  inputs:
-    targetType: inline
-    script: Invoke-WebRequest -Uri https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/windows/oc.zip -OutFile ".\oc.zip"
-    workingDirectory:
+#- task: PowerShell@2
+#  displayName: download oc executable file
+#  inputs:
+#    targetType: inline
+#    script: Invoke-WebRequest -Uri https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/windows/oc.zip -OutFile ".\oc.zip"
+#    workingDirectory:
 
-- task: PowerShell@2
-  displayName: download oc executable file
-  inputs:
-    targetType: inline
-    script: Expand-Archive -Force -LiteralPath '.\oc.zip' -DestinationPath .\
-    workingDirectory:
+#- task: PowerShell@2
+#  displayName: download oc executable file
+#  inputs:
+#    targetType: inline
+#    script: Expand-Archive -Force -LiteralPath '.\oc.zip' -DestinationPath .\
+#    workingDirectory:
 
-- task: oc-setup@2
+- task: oc-cmd@2
   inputs:
+    connectionType: 'OpenShift Connection Service'
     openshiftService: 'openshift service account'
-    version: '4.8.11'
-    workingDirectory: .\
+    cmd: 'oc new-project test-project-windows-agent'
+
+#- task: oc-setup@2
+#  inputs:
+#    openshiftService: 'openshift service account'
+#    version: '4.8.11'
+#    workingDirectory: .\
 # A script task making use of 'oc'
-- script: |
-    oc new-project test-project
+#- script: |
+#    oc new-project test-project
     
