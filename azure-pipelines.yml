@@ -18,14 +18,22 @@ steps:
   displayName: download oc executable file
   inputs:
     targetType: inline
-    script: Invoke-WebRequest -Uri https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/windows/oc.zip -OutFile ".\oc.zip" &&
+    script: Invoke-WebRequest -Uri https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/windows/oc.zip -OutFile ".\oc.zip"
             Expand-Archive -LiteralPath '.\oc.zip' -DestinationPath .\
+    workingDirectory:
+
+- task: PowerShell@2
+  displayName: download oc executable file
+  inputs:
+    targetType: inline
+    script: Expand-Archive -LiteralPath '.\oc.zip' -DestinationPath .\
     workingDirectory:
 
 - task: oc-setup@2
   inputs:
     openshiftService: 'openshift service account'
     version: '4.8.11'
+    path: .\
 # A script task making use of 'oc'
 - script: |
     oc new-project test-project
