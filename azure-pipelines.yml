@@ -18,7 +18,7 @@ steps:
   displayName: download oc executable file
   inputs:
     targetType: inline
-    script: Invoke-WebRequest -Uri https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/windows/oc.zip -OutFile ".\oc-client"
+    script: Invoke-WebRequest -Uri https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/windows/oc.zip -OutFile ".\"
     workingDirectory:
 
 - task: oc-setup@2
