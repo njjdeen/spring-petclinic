@@ -16,7 +16,8 @@ steps:
 - task: oc-setup@2
   inputs:
     connectionType: 'OpenShift Connection Service'
-    openshiftService: 'openshift service account'
+    #openshiftService: 'openshift service account'
+    openshiftService: 'openshift-serviceaccount-2-default-1657109887530'
   # Install oc so that it can be used within a 'script' or bash 'task'
 #- task: PowerShell@2
 #  displayName: download oc executable file
@@ -35,7 +36,8 @@ steps:
 - task: oc-cmd@2
   inputs:
     connectionType: 'OpenShift Connection Service'
-    openshiftService: 'openshift service account'
+    #openshiftService: 'openshift service account'
+    openshiftService: 'openshift-serviceaccount-2-default-1657109887530'
     cmd: 'oc new-project test-project-windows-agent'
 
 #- task: oc-setup@2
