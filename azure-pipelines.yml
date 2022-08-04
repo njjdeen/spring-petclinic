@@ -1,53 +1,111 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
 trigger:
-- '*'
+- main
 
 pool:
-  name: 'windows-agent'
+  name: default
 
 steps:
+- powershell: |
+      Write-Host "Printing Variable: $env:TOKEN_PASS "
+      F:\Tools\oc\oc.exe login --server=https://api.ocp-dta.esp.svb.org:6443 --token=$env:TOKEN_PASS  --insecure-skip-tls-verify=true
+      curl artifactory-p.svb.org -UseBasicParsing
+      F:\Tools\oc\oc.exe get pods
+  env:
+    TOKEN_PASS: $(sc-amos-dta-cicd)
 
-- task: PowerShell@2
-  displayName: print message
-  inputs:
-    targetType: inline
-    script: echo "Pipeline triggered succesfully"
-    workingDirectory: 
-    
-- task: oc-setup@2
-  inputs:
-    connectionType: 'OpenShift Connection Service'
-    openshiftService: 'openshift service account'
-    #openshiftService: 'openshift-serviceaccount-2-default-1657109887530'
+- powershell: |
+    echo Add other tasks to build, test, and deploy your project.
+    echo See https://aka.ms/yaml
+    Get-ChildItem -Force -LiteralPath F:\Tools
+  displayName: 'Run a multi-line script'
+
+- powershell: |
+      echo "checking connection for all DTA worker nodes"
+
+      For ($i = 74; $i -lt 90; $i++){
+        $string_i = $i.ToString()
+        $s = "10.218.39." + $string_i
+      
+        if(!(Test-Connection $s -count 1 -ea 0 -quiet)) {
+          write-host "Error connecting to $s"
+        } else {
+          write-host "succussfully connected to $s"
+        }
+      }
+  displayName: 'check connection for DTA worker nodes'
+
+- powershell: |
+      echo "checking connection for all P1 worker nodes"
+
+      For ($i = 124; $i -lt 128; $i++){
+        $string_i = $i.ToString()
+        $s = "10.218.39." + $string_i
+      
+        if(!(Test-Connection $s -count 1 -ea 0 -quiet)) {
+          write-host "Error connecting to $s"
+        } else {
+          write-host "succussfully connected to $s"
+        }
+      }
+  displayName: 'check connection for P1 worker nodes'
+
+- powershell: |
+      echo "checking connection for all P2 worker nodes"
+
+      For ($i = 174; $i -lt 178; $i++){
+        $string_i = $i.ToString()
+        $s = "10.218.39." + $string_i
+      
+        if(!(Test-Connection $s -count 1 -ea 0 -quiet)) {
+          write-host "Error connecting to $s"
+        } else {
+          write-host "succussfully connected to $s"
+        }
+      }
+  displayName: 'check connection for P2 worker nodes'
+
+- powershell: |
+      echo "checking connection for all QA worker nodes"
+
+      For ($i = 21; $i -lt 24; $i++){
+        $string_i = $i.ToString()
+        $s = "10.218.39." + $string_i
+      
+        if(!(Test-Connection $s -count 1 -ea 0 -quiet)) {
+          write-host "Error connecting to $s"
+        } else {
+          write-host "succussfully connected to $s"
+        }
+      }
+  displayName: 'check connection for QA worker nodes'
   
-  
-  # Install oc so that it can be used within a 'script' or bash 'task'
-#- task: PowerShell@2
-#  displayName: download oc executable file
-#  inputs:
-#    targetType: inline
-#    script: Invoke-WebRequest -Uri https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/windows/oc.zip -OutFile ".\oc.zip"
-#    workingDirectory:
+- powershell: |
+      cat F:\Tools\sonarqube\sonar-scanner\conf\sonar-scanner.properties
 
-#- task: PowerShell@2
-#  displayName: download oc executable file
-#  inputs:
-#    targetType: inline
-#    script: Expand-Archive -Force -LiteralPath '.\oc.zip' -DestinationPath .\
-#    workingDirectory:
+      ls F:\Tools\
 
-- task: oc-cmd@2
+
+- task: SonarQubePrepare@5
   inputs:
-    connectionType: 'OpenShift Connection Service'
-    openshiftService: 'openshift service account'
-    #openshiftService: 'openshift-serviceaccount-2-default-1657109887530'
-    cmd: 'oc new-project test-project-windows-agent'
+    SonarQube: 'sonarqube-sa'
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    cliProjectKey: 'petclinic'
+    cliProjectName: 'petclinic'
+    cliSources: '.'
 
-#- task: oc-setup@2
-#  inputs:
-#    openshiftService: 'openshift service account'
-#    version: '4.8.11'
-#    workingDirectory: .\
-# A script task making use of 'oc'
-#- script: |
-#    oc new-project test-project
-    
+- task: SonarQubeAnalyze@5
+- task: SonarQubePublish@5
+  inputs:
+    pollingTimeoutSec: '300'
+
+- task: InstallFortifySCA@7
+  inputs:
+    InstallerPath: 'F:\Tools\Fortify'
+    LicenseFile: 'F:\Tools\Fortify\license'
+    RunFortifyRulepackUpdate: false
